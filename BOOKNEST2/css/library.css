@@ -1,0 +1,91 @@
+/* ════════════════════════════════════════════
+   BOOKNEST — library.css  (Library page only)
+   Depends on: shared.css (load first)
+   ════════════════════════════════════════════ */
+
+/* ── PAGE HEADER (library-specific decorations) ── */
+.page-header::before {
+  content: '✦';
+  position: absolute;
+  top: 20px; right: 60px;
+  font-size: 80px;
+  color: var(--pista);
+  opacity: 0.25;
+}
+
+/* ── SEARCH BAR ── */
+.search-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.search-wrapper { position: relative; flex: 1; max-width: 440px; }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-light); pointer-events: none; }
+.search-input {
+  width: 100%;
+  padding: 11px 16px 11px 38px;
+  border: 1.5px solid rgba(168,207,160,0.6);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  background: rgba(255,255,255,0.7);
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus { border-color: var(--pista-dark); box-shadow: 0 0 0 3px rgba(74,124,89,0.1); }
+.search-input::placeholder { color: var(--text-light); }
+
+.filter-select {
+  padding: 11px 32px 11px 16px;
+  border: 1.5px solid rgba(168,207,160,0.6);
+  border-radius: 10px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  background: rgba(255,255,255,0.7);
+  color: var(--text-mid);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%239a9a7a' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.search-btn {
+  background: var(--pista-text);
+  color: var(--butter);
+  border: none;
+  padding: 11px 24px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.search-btn:hover { background: var(--pista-dark); transform: translateY(-1px); }
+
+/* ── GENRE STRIP ── */
+.genre-strip { padding: 20px 48px; display: flex; gap: 10px; flex-wrap: wrap; border-bottom: 1px solid rgba(168,207,160,0.2); }
+.genre-pill  { padding: 6px 16px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.2s; border: 1.5px solid rgba(168,207,160,0.4); background: rgba(255,255,255,0.6); color: var(--text-mid); }
+.genre-pill:hover,
+.genre-pill.active { background: var(--pista); color: var(--pista-text); border-color: var(--pista-deep); transform: translateY(-1px); }
+.genre-pill.active { font-weight: 500; }
+
+/* ── RESULTS BAR ── */
+.results-bar    { padding: 18px 48px; display: flex; align-items: center; justify-content: space-between; }
+.results-count  { font-size: 12px; color: var(--text-light); }
+.results-count span { color: var(--pista-text); font-weight: 500; }
+.sort-row       { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-light); }
+.sort-select    { border: 1px solid rgba(168,207,160,0.5); border-radius: 6px; padding: 5px 10px; font-size: 12px; font-family: 'DM Sans', sans-serif; background: rgba(255,255,255,0.6); color: var(--text-mid); outline: none; cursor: pointer; }
+
+/* ── BOOKS SECTION ── */
+.books-section { padding: 8px 48px 64px; }
+.books-grid    { display: grid; grid-template-columns: repeat(5,1fr); gap: 20px; }
+
+.book-card      { animation: fadeUp 0.5s ease both; }
+.book-cover     { height: 148px; }
+.book-info      { padding: 14px 16px 16px; }
+
+/* ── EMPTY STATE ── */
+.empty-state   { text-align: center; padding: 80px 40px; display: none; }
+.empty-icon    { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.empty-title   { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--text-mid); margin-bottom: 8px; }
+.empty-sub     { font-size: 13px; color: var(--text-light); }

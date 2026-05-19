@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest — Issue &amp; Return</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/issue-return.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Book<span>Nest</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="library.html">Library</a></li>
+    <li><a href="issue-return.html" class="active">Issue &amp; Return</a></li>
+    <li><a href="my-shelf.html">My Shelf</a></li>
+    <li><a href="admin.html">Admin</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="index.html">Home</a> › <span>Issue &amp; Return</span></div>
+  <h1 class="page-title">Issue &amp; <em>Return</em></h1>
+  <p class="page-subtitle">Borrow books, track due dates, and return them — all in one place.</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="issue">📤 Issue a Book</button>
+  <button class="tab-btn" data-tab="return">📥 Return a Book</button>
+  <button class="tab-btn" data-tab="history">📋 History</button>
+</div>
+
+<!-- ── ISSUE TAB ── -->
+<div class="main-content tab-panel active" id="tab-issue">
+
+  <div class="panel" style="animation-delay:.05s">
+    <div class="panel-header" style="background:linear-gradient(135deg,rgba(45,90,61,.06),transparent)">
+      <h2>📤 Issue a Book</h2>
+      <p>Fill in the details below to borrow a book from the library.</p>
+    </div>
+    <div class="panel-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="issueName">Student Name</label>
+          <input class="form-input" type="text" id="issueName" placeholder="e.g. Priya Sharma">
+          <span class="error-msg" id="issueNameErr">Please enter your name</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="issueRoll">Roll Number</label>
+          <input class="form-input" type="text" id="issueRoll" placeholder="e.g. 2025CSE042">
+          <span class="error-msg" id="issueRollErr">Please enter roll number</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="issueBookSelect">Select Book</label>
+        <select class="form-select" id="issueBookSelect">
+          <option value="">— Choose a book —</option>
+        </select>
+        <span class="error-msg" id="issueBookErr">Please select a book</span>
+      </div>
+
+      <div class="book-preview" id="bookPreview">
+        <div class="preview-cover" id="previewCover"></div>
+        <div class="preview-info">
+          <div class="preview-title"  id="previewTitle"></div>
+          <div class="preview-author" id="previewAuthor"></div>
+          <div class="preview-badges">
+            <span class="badge badge-genre"    id="previewGenre"></span>
+            <span class="badge"                id="previewStatus"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        ✦ Due date: <strong>7 days</strong> from today &nbsp;·&nbsp;
+        Fine: <strong style="color:var(--pink-text)">₹5 per extra day</strong><br>
+        Your due date will be: <strong id="dueDateDisplay">—</strong>
+      </div>
+
+      <button class="submit-btn submit-btn-issue" id="issueSubmitBtn">Issue Book Now →</button>
+    </div>
+  </div>
+
+  <div class="panel" style="animation-delay:.1s">
+    <div class="panel-header" style="background:linear-gradient(135deg,rgba(139,58,82,.05),transparent)">
+      <h2>📚 Currently Issued</h2>
+      <p>All books that are currently borrowed from the library.</p>
+    </div>
+    <div class="panel-body" style="padding:16px">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total Issued</div></div>
+        <div class="stat-card"><div class="stat-num" id="statActive">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-card overdue-stat"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">Overdue</div></div>
+      </div>
+      <div class="issued-table-wrap">
+        <table class="issued-table">
+          <thead><tr><th>Book</th><th>Student</th><th>Due Date</th><th>Status</th></tr></thead>
+          <tbody id="issuedTableBody">
+            <tr><td colspan="4"><div class="empty-table"><div class="ei">📖</div><p>No books currently issued.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RETURN TAB ── -->
+<div class="main-content tab-panel" id="tab-return">
+
+  <div class="panel" style="animation-delay:.05s">
+    <div class="panel-header" style="background:linear-gradient(135deg,rgba(139,58,82,.06),transparent)">
+      <h2>📥 Return a Book</h2>
+      <p>Look up by roll number or click a row on the right.</p>
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <label class="form-label">Look Up by Roll Number</label>
+        <div class="lookup-row">
+          <input class="lookup-input" type="text" id="lookupRoll" placeholder="Enter roll number…">
+          <button class="lookup-btn" id="lookupBtn">Look Up</button>
+        </div>
+      </div>
+
+      <div class="return-result" id="returnResult">
+        <div class="rr-header">
+          <div>
+            <div class="rr-title" id="rrTitle"></div>
+            <div class="rr-sub"   id="rrSub"></div>
+          </div>
+          <span class="badge" id="rrStatusBadge"></span>
+        </div>
+        <div class="rr-body">
+          <div><div class="rr-field-label">Student</div>   <div class="rr-field-val" id="rrStudent"></div></div>
+          <div><div class="rr-field-label">Roll Number</div><div class="rr-field-val" id="rrRoll"></div></div>
+          <div><div class="rr-field-label">Issued On</div>  <div class="rr-field-val" id="rrIssuedOn"></div></div>
+          <div><div class="rr-field-label">Due Date</div>   <div class="rr-field-val" id="rrDue"></div></div>
+        </div>
+        <div class="fine-display" id="fineDisplay">
+          ⚠ Overdue Fine: <strong id="fineAmount"></strong> (₹5 × <span id="fineDays"></span> days)
+        </div>
+      </div>
+
+      <button class="submit-btn submit-btn-return" id="returnSubmitBtn" disabled>Select a Record to Return</button>
+    </div>
+  </div>
+
+  <div class="panel" style="animation-delay:.1s">
+    <div class="panel-header" style="background:linear-gradient(135deg,rgba(249,245,208,.5),transparent)">
+      <h2>📋 All Issued Books</h2>
+      <p>Click a row to select it for return.</p>
+    </div>
+    <div class="panel-body" style="padding:16px">
+      <div class="issued-table-wrap">
+        <table class="issued-table">
+          <thead><tr><th>Book</th><th>Student / Roll</th><th>Due</th></tr></thead>
+          <tbody id="returnTableBody">
+            <tr><td colspan="3"><div class="empty-table"><div class="ei">📖</div><p>No books currently issued.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HISTORY TAB ── -->
+<div class="main-content tab-panel" id="tab-history">
+  <div class="panel" style="animation-delay:.05s">
+    <div class="panel-header" style="background:linear-gradient(135deg,rgba(194,224,184,.2),transparent)">
+      <h2>📋 Complete History</h2>
+      <p>All issue and return transactions from the library.</p>
+    </div>
+    <div class="panel-body" style="padding:16px">
+      <div class="issued-table-wrap">
+        <table class="issued-table">
+          <thead>
+            <tr><th>Book</th><th>Student</th><th>Roll No.</th><th>Issued On</th><th>Due Date</th><th>Returned On</th><th>Fine</th><th>Status</th></tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr><td colspan="8"><div class="empty-table"><div class="ei">📋</div><p>No transactions yet.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">BookNest</div>
+  <div class="footer-tagline">"Everything you're into, all in one place."</div>
+  <div class="footer-built">Built with HTML · CSS · JavaScript</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- JS: shared data first, then page-specific -->
+<script src="js/books-data.js"></script>
+<script src="js/issue-return.js"></script>
+
+</body>
+</html>

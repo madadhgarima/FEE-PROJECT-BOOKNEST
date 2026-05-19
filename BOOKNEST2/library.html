@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest — Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/library.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="library.html" class="active">Library</a></li>
+      <li><a href="issue-return.html">Issue &amp; Return</a></li>
+      <li><a href="my-shelf.html">My Shelf</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Library</span></div>
+    <h1 class="page-title">Our <em>Collection</em></h1>
+    <p class="page-subtitle">Browse, search and discover — everything you're into, all in one place.</p>
+    <div class="search-bar">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search by title or author...">
+      </div>
+      <select class="filter-select" id="genreFilter">
+        <option value="all">All Genres</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Romance">Romance</option>
+        <option value="Thriller">Thriller</option>
+        <option value="Dystopian">Dystopian</option>
+        <option value="Self Help">Self Help</option>
+        <option value="Finance">Finance</option>
+      </select>
+      <select class="filter-select" id="statusFilter">
+        <option value="all">All Status</option>
+        <option value="available">Available</option>
+        <option value="issued">Issued</option>
+      </select>
+      <button class="search-btn" id="searchBtn">Search</button>
+    </div>
+  </div>
+
+  <div class="genre-strip" id="genreStrip">
+    <span class="genre-pill active" data-genre="all">✦ All Books</span>
+    <span class="genre-pill" data-genre="Fiction">📖 Fiction</span>
+    <span class="genre-pill" data-genre="Fantasy">🧙 Fantasy</span>
+    <span class="genre-pill" data-genre="Romance">🌹 Romance</span>
+    <span class="genre-pill" data-genre="Thriller">🔪 Thriller</span>
+    <span class="genre-pill" data-genre="Dystopian">🌑 Dystopian</span>
+    <span class="genre-pill" data-genre="Self Help">🌱 Self Help</span>
+    <span class="genre-pill" data-genre="Finance">💰 Finance</span>
+  </div>
+
+  <div class="results-bar">
+    <div class="results-count">Showing <span id="resultCount">0</span> books</div>
+    <div class="sort-row">
+      Sort by
+      <select class="sort-select" id="sortSelect">
+        <option value="default">Default</option>
+        <option value="title">Title A–Z</option>
+        <option value="rating">Top Rated</option>
+        <option value="available">Available First</option>
+      </select>
+    </div>
+  </div>
+
+  <section class="books-section">
+    <div class="books-grid" id="booksGrid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📚</div>
+      <div class="empty-title">No books found</div>
+      <div class="empty-sub">Try a different search term or genre filter.</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">BookNest</div>
+    <div class="footer-tagline">"Everything you're into, all in one place."</div>
+    <div class="footer-built">Built with HTML · CSS · JavaScript</div>
+  </footer>
+
+  <!-- JS: shared data first, then page-specific -->
+  <script src="js/books-data.js"></script>
+  <script src="js/library.js"></script>
+
+</body>
+</html>

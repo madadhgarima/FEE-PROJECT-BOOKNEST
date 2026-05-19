@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest — Book Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/book-detail.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="library.html" class="active">Library</a></li>
+      <li><a href="issue-return.html">Issue &amp; Return</a></li>
+      <li><a href="my-shelf.html">My Shelf</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> ›
+    <a href="library.html">Library</a> ›
+    <span id="breadcrumbTitle">Book Detail</span>
+  </div>
+
+  <div class="detail-wrapper">
+
+    <!-- LEFT COL -->
+    <div class="left-col fade-in">
+      <div class="book-cover-large" id="bookCover"></div>
+
+      <div class="shelf-row">
+        <button class="shelf-btn want"    data-type="want">📌 Want to Read</button>
+        <button class="shelf-btn reading" data-type="reading">📖 Currently Reading</button>
+        <button class="shelf-btn done"    data-type="done">✅ Finished</button>
+      </div>
+
+      <div class="status-box">
+        <div class="status-row">
+          <span class="status-label">Status</span>
+          <span class="badge" id="statusBadge"></span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Genre</span>
+          <span id="statusGenre" style="font-weight:500"></span>
+        </div>
+        <div class="status-row">
+          <span class="status-label">Copies Left</span>
+          <span id="statusCopies" style="font-weight:500;color:var(--pista-text)"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div class="right-col">
+      <div class="fade-in-2">
+        <div class="book-genre-tag" id="bookGenreTag"></div>
+        <h1 class="book-title-large"  id="bookTitle"></h1>
+        <div class="book-author-large" id="bookAuthor"></div>
+        <div class="rating-row">
+          <span class="stars-display" id="bookStars"></span>
+          <span class="rating-num">· <span id="reviewCountTop">0</span> reviews</span>
+        </div>
+        <p class="book-description" id="bookDescription"></p>
+      </div>
+
+      <div class="issue-section fade-in-3" id="issueSection">
+        <h3>📤 Issue This Book</h3>
+        <div class="issue-form-grid">
+          <div class="form-group">
+            <label class="form-label" for="studentName">Your Name</label>
+            <input class="form-input" type="text" id="studentName" placeholder="e.g. Garima Sharma">
+            <span class="error-msg" id="nameError">Please enter your name</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="rollNumber">Roll Number</label>
+            <input class="form-input" type="text" id="rollNumber" placeholder="e.g. 2025CSE042">
+            <span class="error-msg" id="rollError">Please enter roll number</span>
+          </div>
+        </div>
+        <p class="issue-info">
+          ✦ Due date: <strong style="color:var(--pista)">7 days</strong> from today &nbsp;·&nbsp;
+          Fine: <strong style="color:#ffaaaa">₹5 per extra day</strong>
+        </p>
+        <button class="issue-submit" id="issueBtn">Issue Now</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="fade-in-3">
+        <div class="reviews-header">
+          <h2 class="reviews-title">Reviews</h2>
+          <span class="reviews-count" id="reviewCountBottom">0 reviews</span>
+        </div>
+        <div id="reviewsList"></div>
+
+        <div class="add-review-section">
+          <h4>✦ Write a Review</h4>
+          <div class="star-picker" id="starPicker">
+            <span class="star-pick" data-val="1">★</span>
+            <span class="star-pick" data-val="2">★</span>
+            <span class="star-pick" data-val="3">★</span>
+            <span class="star-pick" data-val="4">★</span>
+            <span class="star-pick" data-val="5">★</span>
+          </div>
+          <textarea class="review-textarea" id="reviewText" rows="4"
+            placeholder="Share your thoughts about this book..."></textarea>
+          <button class="review-submit" id="reviewSubmitBtn">Submit Review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <div class="footer-logo">BookNest</div>
+    <div class="footer-tagline">"Everything you're into, all in one place."</div>
+    <div class="footer-built">Built with HTML · CSS · JavaScript</div>
+  </footer>
+
+  <!-- JS: shared data first, then page-specific -->
+  <script src="js/books-data.js"></script>
+  <script src="js/book-detail.js"></script>
+
+</body>
+</html>

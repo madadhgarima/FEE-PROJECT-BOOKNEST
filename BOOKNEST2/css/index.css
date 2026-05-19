@@ -1,0 +1,186 @@
+/* ════════════════════════════════════════════
+   BOOKNEST — index.css  (Homepage only)
+   Depends on: shared.css (load first)
+   ════════════════════════════════════════════ */
+
+/* ── HERO ── */
+.hero {
+  min-height: 88vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 60px 48px 40px;
+  gap: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 520px; height: 520px;
+  background: radial-gradient(circle, var(--pista) 0%, transparent 70%);
+  opacity: 0.45;
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 10%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #ffe0ea 0%, transparent 70%);
+  opacity: 0.35;
+  border-radius: 50%;
+}
+.hero-left { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pink-soft);
+  border: 1px solid var(--pink-mid);
+  color: var(--pink-text);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-eyebrow::before { content: '✦'; font-size: 8px; }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 68px;
+  font-weight: 300;
+  line-height: 1.08;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-title em { font-style: italic; color: var(--pista-text); }
+.hero-title .highlight { position: relative; display: inline-block; }
+.hero-title .highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; left: 0;
+  width: 100%; height: 10px;
+  background: var(--butter-deep);
+  z-index: -1;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.hero-taglines { margin: 28px 0 36px; animation: fadeUp 0.6s 0.2s ease both; }
+.tagline-main  { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; font-style: italic; color: var(--text-mid); line-height: 1.5; margin-bottom: 6px; }
+.tagline-sub   { font-size: 13px; color: var(--text-light); line-height: 1.7; max-width: 400px; }
+
+.hero-tags { display: flex; gap: 10px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+.tag {
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+}
+.tag-butter { background: var(--butter);    color: #6b5a00;           border-color: var(--butter-deep); }
+.tag-pista  { background: var(--pista);     color: var(--pista-text); border-color: var(--pista-deep);  }
+.tag-pink   { background: var(--pink-soft); color: var(--pink-text);  border-color: var(--pink-mid);    }
+.tag-butter:hover,
+.tag-pista:hover,
+.tag-pink:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ── HERO RIGHT / BOOK STACK ── */
+.hero-right {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 520px;
+}
+.book-stack { position: relative; width: 300px; height: 420px; }
+.stacked-card {
+  position: absolute;
+  width: 260px; height: 360px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  transition: transform 0.4s ease;
+  cursor: pointer;
+}
+.stacked-card:nth-child(1) { background: linear-gradient(145deg,#aad9a0,#c8edbe); transform: rotate(-7deg)  translate(-28px, 14px); z-index: 1; }
+.stacked-card:nth-child(2) { background: linear-gradient(145deg,#ede07a,#f5eeaa); transform: rotate(-1deg)  translate(8px, -8px);   z-index: 2; }
+.stacked-card:nth-child(3) { background: linear-gradient(145deg,#ffc8dc,#ffe3ee); transform: rotate(6deg)   translate(36px, 18px);  z-index: 3; }
+.book-stack:hover .stacked-card:nth-child(1) { transform: rotate(-10deg) translate(-44px, 20px); }
+.book-stack:hover .stacked-card:nth-child(2) { transform: rotate(-1deg)  translate(8px, -14px);  }
+.book-stack:hover .stacked-card:nth-child(3) { transform: rotate(8deg)   translate(52px, 24px);  }
+.stacked-card:hover { filter: brightness(1.04); }
+.stacked-card-title  { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; line-height: 1.3; }
+.stacked-card-author { font-size: 12px; color: var(--text-mid); }
+.stacked-card-badge  { position: absolute; top: 18px; right: 18px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 12px; background: rgba(255,255,255,0.65); color: var(--text-mid); }
+
+/* Floating stars */
+.star { position: absolute; color: #c9a825; opacity: 0.75; animation: floatStar 3.5s ease-in-out infinite; pointer-events: none; user-select: none; }
+.star:nth-child(1) { top: 18px;  left: 10px;  font-size: 22px; animation-delay: 0s;   animation-duration: 3.2s; }
+.star:nth-child(2) { top: 55px;  right: -10px; font-size: 14px; animation-delay: 0.5s; animation-duration: 4s;   }
+.star:nth-child(3) { top: 140px; left: -18px; font-size: 18px; animation-delay: 1s;   animation-duration: 3.6s; }
+.star:nth-child(4) { bottom: 80px; right: -14px; font-size: 20px; animation-delay: 1.4s; animation-duration: 4.2s; }
+.star:nth-child(5) { bottom: 30px; left: 20px; font-size: 12px; animation-delay: 0.8s; animation-duration: 3s;   }
+.star:nth-child(6) { top: 220px; right: 10px; font-size: 16px; animation-delay: 1.8s; animation-duration: 3.8s; }
+.star:nth-child(7) { top: 300px; left: -8px;  font-size: 11px; animation-delay: 2.2s; animation-duration: 4.5s; }
+
+/* ── MARQUEE ── */
+.marquee-wrap  { background: var(--pista-text); padding: 14px 0; overflow: hidden; }
+.marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+.marquee-item  { display: inline-flex; align-items: center; gap: 12px; padding: 0 28px; font-size: 12px; color: var(--pista); letter-spacing: 0.5px; flex-shrink: 0; }
+.marquee-dot   { width: 4px; height: 4px; border-radius: 50%; background: var(--butter-deep); flex-shrink: 0; }
+
+/* ── FEATURED BOOKS ── */
+.featured-section { padding: 72px 48px; }
+.section-header   { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 40px; }
+.section-label    { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; color: var(--pista-dark); margin-bottom: 8px; }
+.section-title    { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; color: var(--text-dark); line-height: 1.1; }
+.section-title em { font-style: italic; color: var(--pista-text); }
+.view-all {
+  font-size: 12px;
+  color: var(--pista-text);
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--pista-deep);
+  transition: gap 0.2s;
+}
+.view-all:hover { gap: 10px; }
+.books-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+
+/* ── QUOTE STRIP ── */
+.quote-strip { background: #f5f0cc; border-top: 1px solid #e0d878; border-bottom: 1px solid #e0d878; padding: 48px; text-align: center; }
+.quote-text  { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; font-style: italic; color: var(--text-dark); line-height: 1.4; max-width: 680px; margin: 0 auto 12px; }
+.quote-sub   { font-size: 12px; color: var(--text-light); letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── GENRES ── */
+.genres-section { padding: 64px 48px; }
+.genres-grid    { display: grid; grid-template-columns: repeat(7,1fr); gap: 12px; margin-top: 36px; }
+.genre-pill     { padding: 18px 10px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.25s; border: 1.5px solid transparent; }
+.genre-pill:hover { transform: translateY(-3px); border-color: rgba(74,124,89,0.3); }
+.genre-icon  { font-size: 22px; margin-bottom: 8px; }
+.genre-name  { font-size: 11px; font-weight: 500; color: var(--text-dark); }
+.genre-count { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+.gp-1 { background: #fde8e8; }
+.gp-2 { background: var(--pink-soft); }
+.gp-3 { background: #e8e0f8; }
+.gp-4 { background: #ddeeff; }
+.gp-5 { background: var(--pista); }
+.gp-6 { background: var(--butter); }
+.gp-7 { background: #e8f5e9; }

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest — Your Library, Your World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="library.html">Library</a></li>
+      <li><a href="issue-return.html">Issue &amp; Return</a></li>
+      <li><a href="my-shelf.html">My Shelf</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Your Library, Your World</div>
+      <h1 class="hero-title">Knowledge at<br><em>Your <span class="highlight">Fingertips</span></em></h1>
+      <div class="hero-taglines">
+        <p class="tagline-main">"A Warm Digital Embrace for Every Reader."</p>
+        <p class="tagline-sub">See what's in store. Find everything you're into — from timeless classics to hidden gems waiting to be discovered.</p>
+      </div>
+      <div class="hero-tags">
+        <span class="tag tag-pista"   onclick="window.location='library.html'">📚 Browse Books</span>
+        <span class="tag tag-butter"  onclick="window.location='issue-return.html'">✦ Issue a Book</span>
+        <span class="tag tag-pink"    onclick="window.location='my-shelf.html'">♡ My Shelf</span>
+        <span class="tag tag-pista"   onclick="window.location='library.html'">⭐ Write Reviews</span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <span class="star">✦</span><span class="star">★</span><span class="star">✦</span>
+      <span class="star">✶</span><span class="star">★</span><span class="star">✦</span><span class="star">✶</span>
+      <div class="book-stack" id="heroStack"><!-- Filled by index.js --></div>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="marquee-dot"></span>Discover New Books</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Issue &amp; Return Easily</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Track Your Reading Journey</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Share Your Reviews</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Find Your Next Favourite</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Knowledge at Your Fingertips</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Discover New Books</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Issue &amp; Return Easily</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Track Your Reading Journey</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Share Your Reviews</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Find Your Next Favourite</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Knowledge at Your Fingertips</span>
+    </div>
+  </div>
+
+  <section class="featured-section">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Handpicked for you</div>
+        <h2 class="section-title">Featured <em>Books</em></h2>
+      </div>
+      <a href="library.html" class="view-all">View all books →</a>
+    </div>
+    <div class="books-grid" id="featuredGrid"><!-- Filled by index.js --></div>
+  </section>
+
+  <div class="quote-strip">
+    <p class="quote-text">"A reader lives a thousand lives before he dies. The man who never reads lives only one."</p>
+    <p class="quote-sub">— George R.R. Martin &nbsp;✦&nbsp; Welcome to BookNest</p>
+  </div>
+
+  <section class="genres-section">
+    <div class="section-label" style="text-align:center">Explore by genre</div>
+    <h2 class="section-title" style="text-align:center;font-size:34px">What Are You <em>Into?</em></h2>
+    <div class="genres-grid">
+      <div class="genre-pill gp-1" onclick="window.location='library.html?genre=Thriller'"><div class="genre-icon">🔪</div><div class="genre-name">Thriller</div><div class="genre-count">8 books</div></div>
+      <div class="genre-pill gp-2" onclick="window.location='library.html?genre=Romance'"><div class="genre-icon">🌹</div><div class="genre-name">Romance</div><div class="genre-count">8 books</div></div>
+      <div class="genre-pill gp-3" onclick="window.location='library.html?genre=Fantasy'"><div class="genre-icon">🧙</div><div class="genre-name">Fantasy</div><div class="genre-count">10 books</div></div>
+      <div class="genre-pill gp-4" onclick="window.location='library.html?genre=Dystopian'"><div class="genre-icon">🌑</div><div class="genre-name">Dystopian</div><div class="genre-count">7 books</div></div>
+      <div class="genre-pill gp-5" onclick="window.location='library.html?genre=Fiction'"><div class="genre-icon">📖</div><div class="genre-name">Fiction</div><div class="genre-count">3 books</div></div>
+      <div class="genre-pill gp-6" onclick="window.location='library.html?genre=Finance'"><div class="genre-icon">💰</div><div class="genre-name">Finance</div><div class="genre-count">3 books</div></div>
+      <div class="genre-pill gp-7" onclick="window.location='library.html?genre=Self+Help'"><div class="genre-icon">🌱</div><div class="genre-name">Self Help</div><div class="genre-count">3 books</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">BookNest</div>
+    <div class="footer-tagline">"Everything you're into, all in one place."</div>
+    <div class="footer-built">Built with HTML · CSS · JavaScript</div>
+  </footer>
+
+  <!-- JS: shared data first, then page-specific -->
+  <script src="js/books-data.js"></script>
+  <script src="js/index.js"></script>
+
+</body>
+</html>
