@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookNest — My Shelf</title>
+  <!-- Google Fonts: Cormorant Garamond & DM Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  <!-- Page Specific Styles -->
+  <link rel="stylesheet" href="css/my-shelf.css">
+</head>
+<body>
+
+  <!-- ── NAVIGATION BAR ── -->
+  <nav>
+    <a href="index.html" class="logo">Book<span>Nest</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="library.html">Library</a></li>
+      <li><a href="issue-return.html">Issue &amp; Return</a></li>
+      <li><a href="my-shelf.html" class="active">My Shelf</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── PAGE HEADER ── -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> › <span>My Shelf</span>
+    </div>
+    <div class="header-flex-wrapper">
+      <div class="header-text-block">
+        <h1 class="page-title">My <em>Shelf</em></h1>
+        <p class="page-subtitle">Your personal corner for all things books. Keep track of your favourites, discover your reading journey and organize your collection.</p>
+      </div>
+
+      <!-- Student Profile Card / Switcher -->
+      <div class="student-card-badge" id="studentBadge" title="Click to switch student profile">
+        <div class="student-avatar" id="studentAvatar">GS</div>
+        <div class="student-details">
+          <div class="student-name" id="studentNameDisplay">Garima Sharma</div>
+          <div class="student-roll" id="studentRollDisplay">Roll No: 2025CSE042</div>
+        </div>
+        <button class="student-edit-btn" id="openStudentModalBtn" title="Switch Student">✎ Switch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION QUICK NAVIGATION TABS ── -->
+  <div class="shelf-nav-bar">
+    <div class="shelf-nav-links">
+      <a href="#section-overview" class="shelf-nav-item active">✦ Overview</a>
+      <a href="#section-collection" class="shelf-nav-item">📚 Reading Collection</a>
+      <a href="#section-wishlist" class="shelf-nav-item">🔖 Wishlist</a>
+      <a href="#section-favourites" class="shelf-nav-item">💖 Favourites</a>
+      <a href="#section-reviews" class="shelf-nav-item">✍️ My Reviews</a>
+      <a href="#section-activity" class="shelf-nav-item">📊 Reading Activity</a>
+    </div>
+    <button class="quick-add-btn" id="openQuickAddBtn">+ Add to Shelf</button>
+  </div>
+
+  <!-- ── MAIN PAGE CONTENT ── -->
+  <main class="shelf-main-container">
+
+    <!-- ── 1. READING OVERVIEW CARDS ── -->
+    <section class="shelf-section" id="section-overview">
+      <div class="overview-grid">
+        
+        <!-- Wishlist Card -->
+        <div class="overview-card" onclick="document.querySelector('#section-wishlist').scrollIntoView({behavior:'smooth'})">
+          <div class="overview-icon-box icon-wishlist">🔖</div>
+          <div class="overview-content">
+            <div class="overview-number" id="overviewWishlistCount">0</div>
+            <div class="overview-label">Wishlist</div>
+            <div class="overview-sub">Books saved for later</div>
+          </div>
+          <div class="overview-arrow">→</div>
+        </div>
+
+        <!-- Favourites Card -->
+        <div class="overview-card" onclick="document.querySelector('#section-favourites').scrollIntoView({behavior:'smooth'})">
+          <div class="overview-icon-box icon-favourites">💖</div>
+          <div class="overview-content">
+            <div class="overview-number" id="overviewFavouritesCount">0</div>
+            <div class="overview-label">Favourites</div>
+            <div class="overview-sub">Your most loved titles</div>
+          </div>
+          <div class="overview-arrow">→</div>
+        </div>
+
+        <!-- My Reviews Card -->
+        <div class="overview-card" onclick="document.querySelector('#section-reviews').scrollIntoView({behavior:'smooth'})">
+          <div class="overview-icon-box icon-reviews">✍️</div>
+          <div class="overview-content">
+            <div class="overview-number" id="overviewReviewsCount">0</div>
+            <div class="overview-label">My Reviews</div>
+            <div class="overview-sub">Ratings &amp; feedback written</div>
+          </div>
+          <div class="overview-arrow">→</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 2. MY READING COLLECTION ── -->
+    <section class="shelf-section" id="section-collection">
+      <div class="section-title-bar">
+        <div>
+          <div class="section-tag">Personal Reading Journey</div>
+          <h2 class="section-heading">My Reading <em>Collection</em></h2>
+          <p class="section-description">Keep track of what you are reading, books you want to dive into, and stories you have completed.</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-outline" id="addBookToCollectionBtn">+ Add Book to Collection</button>
+        </div>
+      </div>
+
+      <!-- Collection Filter Tabs -->
+      <div class="collection-tabs-bar">
+        <button class="coll-tab-btn active" data-status="want">
+          📌 Want to Read <span class="tab-badge" id="countWant">0</span>
+        </button>
+        <button class="coll-tab-btn" data-status="reading">
+          📖 Currently Reading <span class="tab-badge" id="countReading">0</span>
+        </button>
+        <button class="coll-tab-btn" data-status="read">
+          ✅ Read <span class="tab-badge" id="countRead">0</span>
+        </button>
+      </div>
+
+      <!-- Collection Book Cards Grid -->
+      <div class="collection-books-grid" id="collectionGrid">
+        <!-- Rendered dynamically by js/my-shelf.js -->
+      </div>
+    </section>
+
+    <!-- ── 3. MY WISHLIST ── -->
+    <section class="shelf-section" id="section-wishlist">
+      <div class="section-title-bar">
+        <div>
+          <div class="section-tag">Saved For Later</div>
+          <h2 class="section-heading">My <em>Wishlist</em></h2>
+          <p class="section-description">Books you are excited to read next. Check real-time college library availability and issue them right away.</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-outline" id="addBookToWishlistBtn">+ Add to Wishlist</button>
+        </div>
+      </div>
+
+      <!-- Wishlist Books Grid -->
+      <div class="wishlist-books-grid" id="wishlistGrid">
+        <!-- Rendered dynamically by js/my-shelf.js -->
+      </div>
+    </section>
+
+    <!-- ── 4. MY FAVOURITES ── -->
+    <section class="shelf-section" id="section-favourites">
+      <div class="section-title-bar">
+        <div>
+          <div class="section-tag">Treasured Stories</div>
+          <h2 class="section-heading">My <em>Favourites</em></h2>
+          <p class="section-description">Your handpicked collection of books that left an unforgettable mark.</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-outline" id="addBookToFavouritesBtn">+ Add Favourite</button>
+        </div>
+      </div>
+
+      <!-- Favourites Search & Filter Toolbar -->
+      <div class="favourites-toolbar">
+        <div class="fav-search-wrap">
+          <span class="fav-search-icon">🔍</span>
+          <input type="text" id="favSearchInput" class="fav-search-input" placeholder="Search favourites by title or author...">
+        </div>
+        <div class="fav-genre-filter">
+          <select id="favGenreSelect" class="fav-select">
+            <option value="all">All Genres</option>
+            <option value="Fiction">Fiction</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Romance">Romance</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Dystopian">Dystopian</option>
+            <option value="Self Help">Self Help</option>
+            <option value="Finance">Finance</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Favourites Books Grid -->
+      <div class="favourites-books-grid" id="favouritesGrid">
+        <!-- Rendered dynamically by js/my-shelf.js -->
+      </div>
+    </section>
+
+    <!-- ── 5. MY REVIEWS & RATINGS ── -->
+    <section class="shelf-section" id="section-reviews">
+      <div class="section-title-bar">
+        <div>
+          <div class="section-tag">Student Insights</div>
+          <h2 class="section-heading">My <em>Reviews</em></h2>
+          <p class="section-description">All the ratings and reviews you have written for books in the BookNest collection.</p>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-primary" id="writeReviewBtn">✍️ Write a Review</button>
+        </div>
+      </div>
+
+      <!-- Reviews Cards List -->
+      <div class="reviews-list-container" id="reviewsList">
+        <!-- Rendered dynamically by js/my-shelf.js -->
+      </div>
+    </section>
+
+    <!-- ── 6. MY READING ACTIVITY ── -->
+    <section class="shelf-section" id="section-activity">
+      <div class="section-title-bar">
+        <div>
+          <div class="section-tag">Summary &amp; Habits</div>
+          <h2 class="section-heading">My Reading <em>Activity</em></h2>
+          <p class="section-description">An overview of your personal reading milestones, reviews, and favorite reading genres.</p>
+        </div>
+      </div>
+
+      <div class="activity-grid">
+        <!-- Stat 1: Total Books Read -->
+        <div class="activity-card">
+          <div class="activity-icon-wrap icon-green">📚</div>
+          <div class="activity-number" id="activityBooksRead">0</div>
+          <div class="activity-label">Books Read</div>
+          <div class="activity-sub">Completed from your collection</div>
+        </div>
+
+        <!-- Stat 2: Total Reviews Written -->
+        <div class="activity-card">
+          <div class="activity-icon-wrap icon-burgundy">✍️</div>
+          <div class="activity-number" id="activityReviewsWritten">0</div>
+          <div class="activity-label">Reviews Written</div>
+          <div class="activity-sub">Shared with fellow students</div>
+        </div>
+
+        <!-- Stat 3: Most Read Genre -->
+        <div class="activity-card">
+          <div class="activity-icon-wrap icon-gold">🏷️</div>
+          <div class="activity-number activity-text-val" id="activityTopGenre">—</div>
+          <div class="activity-label">Top Genre</div>
+          <div class="activity-sub">Your most explored literary genre</div>
+        </div>
+
+        <!-- Stat 4: Average Rating Given -->
+        <div class="activity-card">
+          <div class="activity-icon-wrap icon-butter">⭐</div>
+          <div class="activity-number" id="activityAvgRating">—</div>
+          <div class="activity-label">Average Rating</div>
+          <div class="activity-sub">Across all submitted reviews</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── MODAL: ADD BOOK TO SHELF ── -->
+  <div class="modal-overlay" id="addBookModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>✦ Add Book to Shelf</h3>
+        <button class="modal-close-btn" id="closeAddBookModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-form-group">
+          <label class="modal-label" for="addBookSelect">Select Book from Library</label>
+          <select class="modal-select" id="addBookSelect">
+            <option value="">— Choose a book —</option>
+            <!-- Populated by JavaScript -->
+          </select>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label" for="addDestinationSelect">Add To</label>
+          <select class="modal-select" id="addDestinationSelect">
+            <option value="collection_reading">My Reading Collection → Currently Reading</option>
+            <option value="collection_want">My Reading Collection → Want to Read</option>
+            <option value="collection_read">My Reading Collection → Read</option>
+            <option value="wishlist">My Wishlist</option>
+            <option value="favourites">My Favourites</option>
+          </select>
+        </div>
+
+        <div class="modal-preview-box" id="modalBookPreview" style="display:none;">
+          <div class="preview-mini-cover" id="modalPreviewCover"></div>
+          <div class="preview-mini-info">
+            <div class="preview-mini-title" id="modalPreviewTitle"></div>
+            <div class="preview-mini-author" id="modalPreviewAuthor"></div>
+            <div class="preview-mini-genre" id="modalPreviewGenre"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelAddBookBtn">Cancel</button>
+        <button class="btn btn-primary" id="confirmAddBookBtn">Add to Shelf →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: WRITE / EDIT REVIEW ── -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 id="reviewModalTitle">✍️ Write a Review</h3>
+        <button class="modal-close-btn" id="closeReviewModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="reviewEditId" value="">
+
+        <div class="modal-form-group" id="reviewBookSelectGroup">
+          <label class="modal-label" for="reviewBookSelect">Select Book</label>
+          <select class="modal-select" id="reviewBookSelect">
+            <option value="">— Choose a book to review —</option>
+            <!-- Populated by JavaScript -->
+          </select>
+        </div>
+
+        <div class="modal-book-fixed-info" id="reviewBookFixedInfo" style="display:none;">
+          <div class="fixed-info-title" id="reviewFixedTitle"></div>
+          <div class="fixed-info-author" id="reviewFixedAuthor"></div>
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label">Your Rating</label>
+          <div class="modal-star-picker" id="modalStarPicker">
+            <span class="star-item" data-value="1">★</span>
+            <span class="star-item" data-value="2">★</span>
+            <span class="star-item" data-value="3">★</span>
+            <span class="star-item" data-value="4">★</span>
+            <span class="star-item" data-value="5">★</span>
+          </div>
+          <input type="hidden" id="reviewRatingValue" value="5">
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label" for="reviewTextInput">Your Review</label>
+          <textarea class="modal-textarea" id="reviewTextInput" rows="4" placeholder="Write your honest thoughts, reflections or highlights about this book..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelReviewBtn">Cancel</button>
+        <button class="btn btn-primary" id="submitReviewModalBtn">Save Review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: SWITCH STUDENT PROFILE ── -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>👤 Student Profile</h3>
+        <button class="modal-close-btn" id="closeStudentModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtext">BookNest associates your shelf, wishlist, favourites, and reviews with your student roll number.</p>
+        
+        <div class="modal-form-group">
+          <label class="modal-label" for="inputStudentName">Student Name</label>
+          <input type="text" class="modal-input" id="inputStudentName" placeholder="e.g. Garima Sharma">
+        </div>
+
+        <div class="modal-form-group">
+          <label class="modal-label" for="inputStudentRoll">Roll Number</label>
+          <input type="text" class="modal-input" id="inputStudentRoll" placeholder="e.g. 2025CSE042">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelStudentBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveStudentBtn">Save &amp; Switch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST NOTIFICATION ── -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-logo">BookNest</div>
+    <div class="footer-tagline">"Everything you're into, all in one place."</div>
+    <div class="footer-built">Built with HTML · CSS · JavaScript</div>
+  </footer>
+
+  <!-- ── SCRIPTS ── -->
+  <!-- Shared books data first, then page-specific logic -->
+  <script src="js/books-data.js"></script>
+  <script src="js/my-shelf.js"></script>
+
+</body>
+</html>
