@@ -53,7 +53,6 @@
     <div class="shelf-nav-links">
       <a href="#section-overview" class="shelf-nav-item active">✦ Overview</a>
       <a href="#section-collection" class="shelf-nav-item">📚 Reading Collection</a>
-      <a href="#section-wishlist" class="shelf-nav-item">🔖 Wishlist</a>
       <a href="#section-favourites" class="shelf-nav-item">💖 Favourites</a>
       <a href="#section-reviews" class="shelf-nav-item">✍️ My Reviews</a>
       <a href="#section-activity" class="shelf-nav-item">📊 Reading Activity</a>
@@ -68,17 +67,6 @@
     <section class="shelf-section" id="section-overview">
       <div class="overview-grid">
         
-        <!-- Wishlist Card -->
-        <div class="overview-card" onclick="document.querySelector('#section-wishlist').scrollIntoView({behavior:'smooth'})">
-          <div class="overview-icon-box icon-wishlist">🔖</div>
-          <div class="overview-content">
-            <div class="overview-number" id="overviewWishlistCount">0</div>
-            <div class="overview-label">Wishlist</div>
-            <div class="overview-sub">Books saved for later</div>
-          </div>
-          <div class="overview-arrow">→</div>
-        </div>
-
         <!-- Favourites Card -->
         <div class="overview-card" onclick="document.querySelector('#section-favourites').scrollIntoView({behavior:'smooth'})">
           <div class="overview-icon-box icon-favourites">💖</div>
@@ -136,26 +124,7 @@
       </div>
     </section>
 
-    <!-- ── 3. MY WISHLIST ── -->
-    <section class="shelf-section" id="section-wishlist">
-      <div class="section-title-bar">
-        <div>
-          <div class="section-tag">Saved For Later</div>
-          <h2 class="section-heading">My <em>Wishlist</em></h2>
-          <p class="section-description">Books you are excited to read next. Check real-time college library availability and issue them right away.</p>
-        </div>
-        <div class="section-actions">
-          <button class="btn btn-outline" id="addBookToWishlistBtn">+ Add to Wishlist</button>
-        </div>
-      </div>
-
-      <!-- Wishlist Books Grid -->
-      <div class="wishlist-books-grid" id="wishlistGrid">
-        <!-- Rendered dynamically by js/my-shelf.js -->
-      </div>
-    </section>
-
-    <!-- ── 4. MY FAVOURITES ── -->
+    <!-- ── 3. MY FAVOURITES ── -->
     <section class="shelf-section" id="section-favourites">
       <div class="section-title-bar">
         <div>
@@ -213,7 +182,7 @@
       </div>
     </section>
 
-    <!-- ── 6. MY READING ACTIVITY ── -->
+    <!-- ── 5. MY READING ACTIVITY ── -->
     <section class="shelf-section" id="section-activity">
       <div class="section-title-bar">
         <div>
@@ -282,7 +251,6 @@
             <option value="collection_reading">My Reading Collection → Currently Reading</option>
             <option value="collection_want">My Reading Collection → Want to Read</option>
             <option value="collection_read">My Reading Collection → Read</option>
-            <option value="wishlist">My Wishlist</option>
             <option value="favourites">My Favourites</option>
           </select>
         </div>
@@ -359,7 +327,7 @@
         <button class="modal-close-btn" id="closeStudentModal">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-subtext">BookNest associates your shelf, wishlist, favourites, and reviews with your student roll number.</p>
+        <p class="modal-subtext">BookNest associates your reading collection, favourites, and reviews with your student roll number.</p>
         
         <div class="modal-form-group">
           <label class="modal-label" for="inputStudentName">Student Name</label>

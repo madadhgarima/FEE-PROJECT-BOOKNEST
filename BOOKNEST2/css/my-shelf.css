@@ -262,7 +262,7 @@
 /* ── 1. READING OVERVIEW CARDS ── */
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
@@ -316,7 +316,6 @@
   flex-shrink: 0;
 }
 
-.icon-wishlist  { background: var(--butter);    border: 1px solid var(--butter-deep); }
 .icon-favourites{ background: var(--pink-soft); border: 1px solid var(--pink-mid); }
 .icon-reviews   { background: rgba(194,224,184,0.35); border: 1px solid var(--pista); }
 
@@ -403,9 +402,8 @@
   color: var(--butter);
 }
 
-/* ── BOOK CARD COMMON GRID (Collection, Wishlist, Favourites) ── */
+/* ── BOOK CARD COMMON GRID (Collection, Favourites) ── */
 .collection-books-grid,
-.wishlist-books-grid,
 .favourites-books-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1230,7 +1228,6 @@
   }
 
   .collection-books-grid,
-  .wishlist-books-grid,
   .favourites-books-grid {
     grid-template-columns: 1fr;
   }

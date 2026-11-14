@@ -43,7 +43,6 @@ const saveCurrentUser = (user) => {
 
 // ── STORAGE KEYS SCOPED BY STUDENT ROLL ──
 const getCollectionKey = (roll) => `booknest_collection_${roll}`;
-const getWishlistKey   = (roll) => `booknest_wishlist_${roll}`;
 const getFavouritesKey = (roll) => `booknest_favourites_${roll}`;
 const REVIEWS_KEY      = 'booknest_reviews';
 
@@ -54,14 +53,6 @@ const getCollection = (roll) => {
 
 const saveCollection = (roll, data) => {
   localStorage.setItem(getCollectionKey(roll), JSON.stringify(data));
-};
-
-const getWishlist = (roll) => {
-  return JSON.parse(localStorage.getItem(getWishlistKey(roll)) || '[]');
-};
-
-const saveWishlist = (roll, data) => {
-  localStorage.setItem(getWishlistKey(roll), JSON.stringify(data));
 };
 
 const getFavourites = (roll) => {
@@ -97,14 +88,6 @@ const seedInitialDataIfEmpty = (user) => {
     { bookId: 5,  status: 'want',    dateAdded: '10 May 2026' }  // Powerless
   ];
   saveCollection(user.roll, initialCollection);
-
-  // Initialize Wishlist: 3 saved books
-  const initialWishlist = [
-    { bookId: 2,  dateAdded: '08 May 2026' }, // To Kill a Mockingbird
-    { bookId: 8,  dateAdded: '11 May 2026' }, // The Hobbit
-    { bookId: 22, dateAdded: '13 May 2026' }  // The Psychology of Money
-  ];
-  saveWishlist(user.roll, initialWishlist);
 
   // Initialize Favourites: 3 books
   const initialFavourites = [
@@ -144,23 +127,7 @@ const seedInitialDataIfEmpty = (user) => {
   localStorage.setItem(seedKey, 'true');
 };
 
-// ── LIBRARY AVAILABILITY HELPER ──
-const checkLibraryAvailability = (bookId) => {
-  const book = BOOKS.find(b => b.id === bookId);
-  if (!book) return { available: false, copies: 0 };
-
-  const issuedList = JSON.parse(localStorage.getItem('issuedBooks') || '[]');
-  const currentlyIssuedCount = issuedList.filter(r => r.bookId === bookId && r.status === 'issued').length;
-  const copiesRemaining = Math.max(0, book.copies - currentlyIssuedCount);
-
-  const isAvail = book.status === 'available' && copiesRemaining > 0;
-  return {
-    available: isAvail,
-    copies: copiesRemaining
-  };
-};
-
-// ── BOOK COVER GENERATOR (SECTION 9) ──
+// ── BOOK COVER GENERATOR ──
 // Uses elegant placeholders with book icon, title, author, soft pastel gradient.
 // Automatically displays real cover if added to images/covers/ or images/.
 const renderBookCover = (book) => {
@@ -197,16 +164,14 @@ const renderStudentProfile = () => {
   $('#studentAvatar').textContent = initials;
 };
 
-// ── 1. READING OVERVIEW CARDS (SECTION 4) ──
+// ── 1. READING OVERVIEW CARDS ──
 const renderOverviewCards = () => {
   const user = getCurrentUser();
-  const wishlist   = getWishlist(user.roll);
   const favourites = getFavourites(user.roll);
   const reviews    = getUserReviews(user.roll);
 
-  $('#overviewWishlistCount').textContent   = wishlist.length;
-  $('#overviewFavouritesCount').textContent = favourites.length;
-  $('#overviewReviewsCount').textContent    = reviews.length;
+  if ($('#overviewFavouritesCount')) $('#overviewFavouritesCount').textContent = favourites.length;
+  if ($('#overviewReviewsCount'))    $('#overviewReviewsCount').textContent    = reviews.length;
 };
 
 // ── 2. MY READING COLLECTION (SECTION 5) ──
@@ -327,81 +292,7 @@ const removeFromCollection = (bookId) => {
   showToast(`Removed "${title}" from your collection.`);
 };
 
-// ── 3. MY WISHLIST (SECTION 6) ──
-const renderWishlist = () => {
-  const user = getCurrentUser();
-  const wishlist = getWishlist(user.roll);
-  const grid = $('#wishlistGrid');
-
-  if (wishlist.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-shelf-box">
-        <div class="empty-shelf-icon">🔖</div>
-        <div class="empty-shelf-title">Your Wishlist is Empty</div>
-        <p class="empty-shelf-desc">Found books you would love to borrow or read later? Save them here to keep track.</p>
-        <button class="btn btn-primary" onclick="openAddBookModal('wishlist')">+ Add to Wishlist</button>
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = wishlist.map(item => {
-    const book = BOOKS.find(b => b.id === item.bookId);
-    if (!book) return '';
-
-    const avail = checkLibraryAvailability(book.id);
-    const availClass = avail.available ? 'avail-available' : 'avail-issued';
-    const availText  = avail.available
-      ? `● Available (${avail.copies} left)`
-      : `○ Currently Issued`;
-
-    return `
-      <div class="shelf-book-card fade-in">
-        ${renderBookCover(book)}
-        <div class="shelf-card-body">
-          <div class="shelf-card-genre">${book.genre}</div>
-          <div class="shelf-card-title">${book.title}</div>
-          <div class="shelf-card-author">by ${book.author}</div>
-          <p class="shelf-card-desc">${book.shortDescription}</p>
-
-          <div class="shelf-card-meta">
-            <span class="avail-pill ${availClass}">${availText}</span>
-            <span class="stars">${renderStars(book.rating)}</span>
-          </div>
-
-          <div class="shelf-card-actions">
-            <a href="book-detail.html?id=${book.id}" class="card-action-link">View Details →</a>
-            <div style="display:flex;gap:6px;align-items:center;">
-              ${avail.available
-                ? `<a href="issue-return.html?bookId=${book.id}" class="card-action-issue">Issue Book →</a>`
-                : `<button class="card-action-issue disabled" disabled title="Currently borrowed by other students">Issued</button>`
-              }
-              <button class="card-action-remove" onclick="removeFromWishlist(${book.id})" title="Remove from Wishlist">
-                🗑
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-};
-
-const removeFromWishlist = (bookId) => {
-  const user = getCurrentUser();
-  let wishlist = getWishlist(user.roll);
-  const book = BOOKS.find(b => b.id === bookId);
-  const title = book ? book.title : 'Book';
-
-  wishlist = wishlist.filter(item => item.bookId !== bookId);
-  saveWishlist(user.roll, wishlist);
-
-  renderWishlist();
-  renderOverviewCards();
-  showToast(`Removed "${title}" from your wishlist.`);
-};
-
-// ── 4. MY FAVOURITES (SECTION 7) ──
+// ── 3. MY FAVOURITES ──
 let favSearchQuery = '';
 let favGenreFilter = 'all';
 
@@ -695,16 +586,6 @@ $('#confirmAddBookBtn').addEventListener('click', () => {
     });
     renderCollection();
     renderReadingActivity();
-  } else if (destination === 'wishlist') {
-    let wishlist = getWishlist(user.roll);
-    if (wishlist.some(item => item.bookId === bookId)) {
-      showToast('This book is already in your wishlist.', true);
-      return;
-    }
-    wishlist.push({ bookId, dateAdded: dateStr });
-    saveWishlist(user.roll, wishlist);
-    renderWishlist();
-    showToast(`Added "${book.title}" to your wishlist!`);
   } else if (destination === 'favourites') {
     let favourites = getFavourites(user.roll);
     if (favourites.some(item => item.bookId === bookId)) {
@@ -867,7 +748,6 @@ $('#saveStudentBtn').addEventListener('click', () => {
   renderStudentProfile();
   renderOverviewCards();
   renderCollection();
-  renderWishlist();
   renderFavourites();
   renderReviews();
   renderReadingActivity();
@@ -901,7 +781,6 @@ const setupEventListeners = () => {
   // Modal open / close triggers
   $('#openQuickAddBtn').addEventListener('click', () => openAddBookModal());
   $('#addBookToCollectionBtn').addEventListener('click', () => openAddBookModal(`collection_${currentCollectionTab}`));
-  $('#addBookToWishlistBtn').addEventListener('click', () => openAddBookModal('wishlist'));
   $('#addBookToFavouritesBtn').addEventListener('click', () => openAddBookModal('favourites'));
   $('#writeReviewBtn').addEventListener('click', () => openWriteReviewModal());
   $('#openStudentModalBtn').addEventListener('click', openStudentModal);
@@ -949,7 +828,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderStudentProfile();
   renderOverviewCards();
   renderCollection();
-  renderWishlist();
   renderFavourites();
   renderReviews();
   renderReadingActivity();
