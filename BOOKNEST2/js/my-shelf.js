@@ -265,6 +265,7 @@ const renderCollection = () => {
           <div class="shelf-card-genre">${book.genre}</div>
           <div class="shelf-card-title">${book.title}</div>
           <div class="shelf-card-author">by ${book.author}</div>
+          <p class="shelf-card-desc">${book.shortDescription}</p>
 
           <div class="shelf-card-meta">
             <span class="reading-status-pill ${statusBadgeClass}">${statusBadgeText}</span>
@@ -361,6 +362,7 @@ const renderWishlist = () => {
           <div class="shelf-card-genre">${book.genre}</div>
           <div class="shelf-card-title">${book.title}</div>
           <div class="shelf-card-author">by ${book.author}</div>
+          <p class="shelf-card-desc">${book.shortDescription}</p>
 
           <div class="shelf-card-meta">
             <span class="avail-pill ${availClass}">${availText}</span>
@@ -455,6 +457,7 @@ const renderFavourites = () => {
           <div class="shelf-card-genre">${book.genre}</div>
           <div class="shelf-card-title">${book.title}</div>
           <div class="shelf-card-author">by ${book.author}</div>
+          <p class="shelf-card-desc">${book.shortDescription}</p>
 
           <div class="shelf-card-meta">
             <span class="reading-status-pill status-reading">💖 Favourite</span>
@@ -656,6 +659,7 @@ $('#addBookSelect').addEventListener('change', () => {
   $('#modalPreviewTitle').textContent = book.title;
   $('#modalPreviewAuthor').textContent = `by ${book.author}`;
   $('#modalPreviewGenre').textContent = book.genre;
+  if ($('#modalPreviewDesc')) $('#modalPreviewDesc').textContent = book.shortDescription;
   preview.style.display = 'flex';
 });
 

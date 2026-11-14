@@ -1,282 +1,341 @@
 // ════════════════════════════════════════════
-//  issue-return.js — Issue & Return page JS
+//  book-detail.js — Individual Book Detail Page
 //  Depends on: books-data.js (load first)
 // ════════════════════════════════════════════
 
-// ── HELPERS ──
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
+// ── DOM HELPERS ──
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
 
+// ── TOAST NOTIFICATION ──
 let toastTimer;
-const showToast = (msg, isErr = false) => {
-  const t = $('#toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isErr ? ' err' : '');
-  t.classList.add('show');
+const showToast = (message, isError = false) => {
+  const toast = $('#toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = 'toast' + (isError ? ' err' : '');
+  toast.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 };
 
-const today = new Date();
-const due7  = new Date();
-due7.setDate(today.getDate() + 7);
-
-const fmtDate = d => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-
-$('#dueDateDisplay').textContent = fmtDate(due7);
+// ── STORAGE HELPERS ──
+const getCurrentUser = () => {
+  const stored = localStorage.getItem('booknest_current_user');
+  if (stored) {
+    try { return JSON.parse(stored); } catch (e) {}
+  }
+  return { name: 'Garima Sharma', roll: '2025CSE042' };
+};
 
 const getIssued   = () => JSON.parse(localStorage.getItem('issuedBooks')   || '[]');
-const saveIssued  = d  => localStorage.setItem('issuedBooks', JSON.stringify(d));
-const getHistory  = () => JSON.parse(localStorage.getItem('returnHistory') || '[]');
-const saveHistory = d  => localStorage.setItem('returnHistory', JSON.stringify(d));
+const saveIssued  = (data) => localStorage.setItem('issuedBooks', JSON.stringify(data));
+const getAllReviews = () => JSON.parse(localStorage.getItem('booknest_reviews') || '[]');
+const saveAllReviews = (data) => localStorage.setItem('booknest_reviews', JSON.stringify(data));
 
-// ── POPULATE DROPDOWN ──
-const populateSelect = () => {
-  const sel = $('#issueBookSelect');
-  while (sel.options.length > 1) sel.remove(1);
-  Array.from(sel.querySelectorAll('optgroup')).forEach(g => g.remove());
+const getCollection = (roll) => JSON.parse(localStorage.getItem(`booknest_collection_${roll}`) || '[]');
+const saveCollection = (roll, data) => localStorage.setItem(`booknest_collection_${roll}`, JSON.stringify(data));
 
-  const issuedIds = getIssued().filter(r => r.status === 'issued').map(r => r.bookId);
-  const genres    = [...new Set(BOOKS.map(b => b.genre))];
+// ── GET BOOK BY ID FROM URL QUERY ──
+const getBookFromURL = () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id'));
+  const found = BOOKS.find(b => b.id === id);
+  return found || BOOKS[0]; // fallback to first book if not found
+};
 
-  genres.forEach(genre => {
-    const grp = document.createElement('optgroup');
-    grp.label = `── ${genre} ──`;
-    BOOKS.filter(b => b.genre === genre).forEach(b => {
-      const alreadyIssued = issuedIds.includes(b.id) || b.status === 'issued';
-      const opt = document.createElement('option');
-      opt.value = b.id;
-      opt.textContent = alreadyIssued
-        ? `${b.title}  (Currently Issued)`
-        : `${b.title} — ${b.author}`;
-      opt.disabled = alreadyIssued;
-      if (alreadyIssued) opt.style.color = '#9a9a7a';
-      grp.appendChild(opt);
+// ── CHECK LIVE LIBRARY AVAILABILITY ──
+const checkAvailability = (book) => {
+  const issuedList = getIssued();
+  const currentlyIssuedCount = issuedList.filter(r => r.bookId === book.id && r.status === 'issued').length;
+  const copiesRemaining = Math.max(0, book.copies - currentlyIssuedCount);
+  const isAvailable = book.status === 'available' && copiesRemaining > 0;
+
+  return {
+    isAvailable,
+    copiesRemaining
+  };
+};
+
+// ── RENDER BOOK DETAILS ──
+const renderBookDetails = (book) => {
+  // Page Title & Breadcrumbs
+  document.title = `BookNest — ${book.title}`;
+  if ($('#breadcrumbTitle')) $('#breadcrumbTitle').textContent = book.title;
+
+  // Header info
+  if ($('#bookTitle'))       $('#bookTitle').textContent = book.title;
+  if ($('#bookAuthor'))      $('#bookAuthor').textContent = `by ${book.author}`;
+  if ($('#bookGenreTag'))    $('#bookGenreTag').textContent = book.genre;
+  if ($('#bookStars'))       $('#bookStars').textContent = renderStars(book.rating);
+
+  // FULL ENGAGING DESCRIPTION (SECTION 5)
+  if ($('#bookDescription')) {
+    $('#bookDescription').textContent = book.description;
+  }
+
+  // Cover image / placeholder
+  const coverEl = $('#bookCover');
+  if (coverEl) {
+    coverEl.style.background = book.cover || 'linear-gradient(135deg, #eef7ea, #fdfae8)';
+    coverEl.innerHTML = `
+      <img src="images/covers/${book.id}.jpg"
+           alt="${book.title}"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+           style="display:none;width:100%;height:100%;object-fit:cover;border-radius:var(--radius);" />
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;">
+        <span style="font-size:36px;margin-bottom:12px;">📖</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;line-height:1.2;color:var(--text-dark);">${book.title}</span>
+        <span style="font-size:13px;font-style:italic;color:var(--text-mid);margin-top:6px;">by ${book.author}</span>
+      </div>
+    `;
+  }
+
+  // Status & Copies
+  const avail = checkAvailability(book);
+  if ($('#statusBadge')) {
+    $('#statusBadge').textContent = avail.isAvailable ? 'Available' : 'Issued';
+    $('#statusBadge').className = `badge badge-${avail.isAvailable ? 'available' : 'issued'}`;
+  }
+  if ($('#statusGenre'))  $('#statusGenre').textContent  = book.genre;
+  if ($('#statusCopies')) $('#statusCopies').textContent = `${avail.copiesRemaining} copies`;
+
+  // Issue Button state
+  const issueBtn = $('#issueBtn');
+  if (issueBtn) {
+    if (!avail.isAvailable) {
+      issueBtn.disabled = true;
+      issueBtn.textContent = 'Currently Issued';
+      issueBtn.style.opacity = '0.6';
+      issueBtn.style.cursor = 'not-allowed';
+    } else {
+      issueBtn.disabled = false;
+      issueBtn.textContent = 'Issue Now';
+      issueBtn.style.opacity = '1';
+      issueBtn.style.cursor = 'pointer';
+    }
+  }
+
+  // Highlight Current Shelf Status if book is in user's personal collection
+  const user = getCurrentUser();
+  const collection = getCollection(user.roll);
+  const shelfEntry = collection.find(item => item.bookId === book.id);
+
+  $$('.shelf-btn').forEach(btn => btn.classList.remove('active'));
+  if (shelfEntry) {
+    const activeBtnType = shelfEntry.status === 'read' ? 'done' : shelfEntry.status;
+    const matchBtn = $(`.shelf-btn[data-type="${activeBtnType}"]`);
+    if (matchBtn) matchBtn.classList.add('active');
+  }
+};
+
+// ── SHELF BUTTONS (Want to Read / Currently Reading / Finished) ──
+const setupShelfButtons = (book) => {
+  $$('.shelf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const user = getCurrentUser();
+      let collection = getCollection(user.roll);
+      const type = btn.dataset.type; // 'want', 'reading', 'done'
+      const status = type === 'done' ? 'read' : type;
+
+      const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      const existing = collection.find(item => item.bookId === book.id);
+
+      if (existing) {
+        existing.status = status;
+      } else {
+        collection.push({ bookId: book.id, status, dateAdded: dateStr });
+      }
+
+      saveCollection(user.roll, collection);
+
+      $$('.shelf-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const labels = {
+        want: 'Want to Read',
+        reading: 'Currently Reading',
+        done: 'Finished (Read)'
+      };
+      showToast(`✦ Added to your shelf under "${labels[type]}"!`);
     });
-    sel.appendChild(grp);
   });
 };
 
-// ── BOOK PREVIEW ──
-$('#issueBookSelect').addEventListener('change', () => {
-  const id   = parseInt($('#issueBookSelect').value);
-  if (!id) { $('#bookPreview').classList.remove('visible'); return; }
-  const book = BOOKS.find(b => b.id === id);
-  if (!book) return;
+// ── ISSUE BOOK SECTION ──
+const setupIssueForm = (book) => {
+  const user = getCurrentUser();
+  if ($('#studentName')) $('#studentName').value = user.name;
+  if ($('#rollNumber'))  $('#rollNumber').value  = user.roll;
 
-  $('#previewCover').style.background = book.cover;
-  $('#previewCover').textContent = book.title;
-  $('#previewTitle').textContent = book.title;
-  $('#previewAuthor').textContent = `by ${book.author}`;
-  $('#previewGenre').textContent = book.genre;
-  const sb = $('#previewStatus');
-  sb.textContent = 'Available';
-  sb.className = 'badge badge-available';
-  $('#bookPreview').classList.add('visible');
-});
+  const issueBtn = $('#issueBtn');
+  if (!issueBtn) return;
 
-// ── ISSUE SUBMIT ──
-$('#issueSubmitBtn').addEventListener('click', () => {
-  const name   = $('#issueName').value.trim();
-  const roll   = $('#issueRoll').value.trim();
-  const bookId = parseInt($('#issueBookSelect').value);
-  let valid    = true;
+  issueBtn.addEventListener('click', () => {
+    const name = $('#studentName').value.trim();
+    const roll = $('#rollNumber').value.trim();
+    let valid = true;
 
-  [$('#issueName'), $('#issueRoll'), $('#issueBookSelect')].forEach(el => el.classList.remove('error'));
-  [$('#issueNameErr'), $('#issueRollErr'), $('#issueBookErr')].forEach(el => el.classList.remove('show'));
+    $('#nameError').classList.remove('show');
+    $('#rollError').classList.remove('show');
+    $('#studentName').classList.remove('error');
+    $('#rollNumber').classList.remove('error');
 
-  if (!name)   { $('#issueName').classList.add('error');       $('#issueNameErr').classList.add('show'); valid = false; }
-  if (!roll)   { $('#issueRoll').classList.add('error');        $('#issueRollErr').classList.add('show'); valid = false; }
-  if (!bookId) { $('#issueBookSelect').classList.add('error'); $('#issueBookErr').classList.add('show'); valid = false; }
-  if (!valid)  return;
+    if (!name) {
+      $('#nameError').classList.add('show');
+      $('#studentName').classList.add('error');
+      valid = false;
+    }
+    if (!roll) {
+      $('#rollError').classList.add('show');
+      $('#rollNumber').classList.add('error');
+      valid = false;
+    }
+    if (!valid) return;
 
-  const book      = BOOKS.find(b => b.id === bookId);
-  const issuedIds = getIssued().filter(r => r.status === 'issued').map(r => r.bookId);
-  if (issuedIds.includes(bookId)) { showToast('This book is already issued!', true); return; }
+    const avail = checkAvailability(book);
+    if (!avail.isAvailable) {
+      showToast('This book is currently out of stock in the library.', true);
+      return;
+    }
 
-  const dueStr = fmtDate(due7);
-  const record = { bookId, title: book.title, author: book.author, student: name, roll, issuedOn: fmtDate(today), dueDate: dueStr, status: 'issued', issuedTimestamp: today.getTime() };
-  const issued = getIssued();
-  issued.push(record);
-  saveIssued(issued);
+    const today = new Date();
+    const due7  = new Date();
+    due7.setDate(today.getDate() + 7);
+    const fmtDate = (d) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  $('#issueName').value = '';
-  $('#issueRoll').value = '';
-  $('#issueBookSelect').value = '';
-  $('#bookPreview').classList.remove('visible');
+    const issuedList = getIssued();
+    const record = {
+      bookId: book.id,
+      title: book.title,
+      author: book.author,
+      student: name,
+      roll: roll,
+      issuedOn: fmtDate(today),
+      dueDate: fmtDate(due7),
+      status: 'issued',
+      issuedTimestamp: today.getTime()
+    };
 
-  populateSelect();
-  renderIssuedTable();
-  renderReturnTable();
-  renderStats();
-  showToast(`✦ "${book.title}" issued to ${name}! Due: ${dueStr}`);
-});
+    issuedList.push(record);
+    saveIssued(issuedList);
 
-// ── ISSUED TABLE ──
-const renderIssuedTable = () => {
-  const active = getIssued().filter(r => r.status === 'issued');
-  const tbody  = $('#issuedTableBody');
+    // Save profile if updated
+    saveCurrentUser({ name, roll });
 
-  if (!active.length) {
-    tbody.innerHTML = `<tr><td colspan="4"><div class="empty-table"><div class="ei">📖</div><p>No books currently issued.</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = active.map(r => {
-    const isOD = today > new Date(r.dueDate);
-    const days = isOD ? Math.ceil((today - new Date(r.dueDate)) / 86400000) : 0;
-    return `<tr>
-      <td class="book-name">${r.title}</td>
-      <td>${r.student}<br><span style="font-size:10px;color:var(--text-light)">${r.roll}</span></td>
-      <td class="${isOD ? 'overdue-text' : ''}">${r.dueDate}${isOD ? ` <span class="fine-pill">+${days}d</span>` : ''}</td>
-      <td><span class="badge badge-issued">Issued</span></td>
-    </tr>`;
-  }).join('');
-};
-
-// ── STATS ──
-const renderStats = () => {
-  const active  = getIssued().filter(r => r.status === 'issued');
-  const overdue = active.filter(r => today > new Date(r.dueDate));
-  $('#statTotal').textContent   = active.length;
-  $('#statActive').textContent  = active.length - overdue.length;
-  $('#statOverdue').textContent = overdue.length;
-};
-
-// ── RETURN TABLE ──
-let selectedReturnIdx = null;
-
-const renderReturnTable = () => {
-  const active = getIssued().filter(r => r.status === 'issued');
-  const tbody  = $('#returnTableBody');
-
-  if (!active.length) {
-    tbody.innerHTML = `<tr><td colspan="3"><div class="empty-table"><div class="ei">📖</div><p>No books currently issued.</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = active.map((r, i) => {
-    const isOD = today > new Date(r.dueDate);
-    return `<tr class="clickable-row" data-idx="${i}" onclick="selectReturn(${i})">
-      <td class="book-name">${r.title}</td>
-      <td>${r.student}<br><span style="font-size:10px;color:var(--text-light)">${r.roll}</span></td>
-      <td class="${isOD ? 'overdue-text' : ''}">${r.dueDate}</td>
-    </tr>`;
-  }).join('');
-};
-
-// ── SELECT RETURN ──
-const selectReturn = (idx) => {
-  const active = getIssued().filter(r => r.status === 'issued');
-  const rec    = active[idx];
-  if (!rec) return;
-  selectedReturnIdx = idx;
-
-  $$('.clickable-row').forEach((tr, i) => tr.classList.toggle('selected', i === idx));
-
-  const isOD = today > new Date(rec.dueDate);
-  const days = isOD ? Math.ceil((today - new Date(rec.dueDate)) / 86400000) : 0;
-  const fine = days * 5;
-
-  $('#rrTitle').textContent    = rec.title;
-  $('#rrSub').textContent      = `by ${rec.author || '—'}`;
-  $('#rrStudent').textContent  = rec.student;
-  $('#rrRoll').textContent     = rec.roll;
-  $('#rrIssuedOn').textContent = rec.issuedOn;
-  $('#rrDue').textContent      = rec.dueDate;
-
-  const badge = $('#rrStatusBadge');
-  badge.textContent = isOD ? 'Overdue' : 'Issued';
-  badge.className   = `badge ${isOD ? 'badge-issued' : 'badge-available'}`;
-
-  const fd = $('#fineDisplay');
-  if (isOD) { $('#fineAmount').textContent = `₹${fine}`; $('#fineDays').textContent = days; fd.classList.add('visible'); }
-  else fd.classList.remove('visible');
-
-  $('#returnResult').classList.add('visible');
-  $('#returnSubmitBtn').disabled    = false;
-  $('#returnSubmitBtn').textContent = `Return "${rec.title}" →`;
-};
-
-// ── LOOKUP BY ROLL ──
-$('#lookupBtn').addEventListener('click', () => {
-  const roll   = $('#lookupRoll').value.trim().toLowerCase();
-  if (!roll) { showToast('Enter a roll number to look up.', true); return; }
-  const active = getIssued().filter(r => r.status === 'issued');
-  const idx    = active.findIndex(r => r.roll.toLowerCase() === roll);
-  if (idx === -1) { showToast('No active record found for that roll number.', true); return; }
-  document.querySelector('[data-tab="return"]').click();
-  selectReturn(idx);
-});
-$('#lookupRoll').addEventListener('keydown', e => { if (e.key === 'Enter') $('#lookupBtn').click(); });
-
-// ── RETURN SUBMIT ──
-$('#returnSubmitBtn').addEventListener('click', () => {
-  if (selectedReturnIdx === null) return;
-  const active = getIssued().filter(r => r.status === 'issued');
-  const rec    = active[selectedReturnIdx];
-  if (!rec) return;
-
-  const isOD = today > new Date(rec.dueDate);
-  const days = isOD ? Math.ceil((today - new Date(rec.dueDate)) / 86400000) : 0;
-  const fine = days * 5;
-
-  const all  = getIssued();
-  const fIdx = all.findIndex(r => r.bookId === rec.bookId && r.roll === rec.roll && r.status === 'issued');
-  if (fIdx !== -1) { all[fIdx].status = 'returned'; all[fIdx].returnedOn = fmtDate(today); all[fIdx].fine = fine; saveIssued(all); }
-
-  const hist = getHistory();
-  hist.unshift({ ...rec, status: 'returned', returnedOn: fmtDate(today), fine });
-  saveHistory(hist);
-
-  selectedReturnIdx = null;
-  $('#returnResult').classList.remove('visible');
-  $('#returnSubmitBtn').disabled    = true;
-  $('#returnSubmitBtn').textContent = 'Select a Record to Return';
-  $('#lookupRoll').value = '';
-
-  populateSelect();
-  renderIssuedTable();
-  renderReturnTable();
-  renderStats();
-  showToast(fine > 0 ? `✦ "${rec.title}" returned! Fine: ₹${fine}` : `✦ "${rec.title}" returned! No fine.`);
-});
-
-// ── HISTORY TABLE ──
-const renderHistory = () => {
-  const hist  = getHistory();
-  const tbody = $('#historyTableBody');
-  if (!hist.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-table"><div class="ei">📋</div><p>No transactions yet.</p></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = hist.map(r => `
-    <tr>
-      <td class="book-name">${r.title}</td>
-      <td>${r.student}</td><td>${r.roll}</td>
-      <td>${r.issuedOn}</td><td>${r.dueDate}</td>
-      <td>${r.returnedOn || '—'}</td>
-      <td>${r.fine > 0 ? `<span class="fine-pill">₹${r.fine}</span>` : '—'}</td>
-      <td><span class="badge ${r.status === 'returned' ? 'badge-available' : 'badge-issued'}">${r.status}</span></td>
-    </tr>`).join('');
-};
-
-// ── TABS ──
-$$('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    $$('.tab-btn').forEach(b => b.classList.remove('active'));
-    $$('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    $(`#tab-${btn.dataset.tab}`).classList.add('active');
-    if (btn.dataset.tab === 'history') renderHistory();
-    if (btn.dataset.tab === 'return')  renderReturnTable();
+    renderBookDetails(book);
+    showToast(`✦ "${book.title}" successfully issued to ${name}! Due: ${fmtDate(due7)}`);
   });
-});
+};
 
-// ── INIT ──
+// ── REVIEWS SYSTEM ──
+let selectedReviewRating = 5;
+
+const renderReviews = (book) => {
+  const allReviews = getAllReviews();
+  const bookReviews = allReviews.filter(r => r.bookId === book.id);
+
+  if ($('#reviewCountTop'))    $('#reviewCountTop').textContent    = bookReviews.length;
+  if ($('#reviewCountBottom')) $('#reviewCountBottom').textContent = `${bookReviews.length} reviews`;
+
+  const reviewsList = $('#reviewsList');
+  if (!reviewsList) return;
+
+  if (bookReviews.length === 0) {
+    reviewsList.innerHTML = `
+      <div style="background:#fefcf2;border:1px dashed rgba(168,207,160,0.5);border-radius:12px;padding:28px 20px;text-align:center;color:var(--text-light);margin-bottom:20px;">
+        <span style="font-size:24px;display:block;margin-bottom:6px;">✍️</span>
+        <p style="font-size:13px;font-style:italic;">No reviews written for this book yet. Be the first student to review it!</p>
+      </div>
+    `;
+    return;
+  }
+
+  reviewsList.innerHTML = bookReviews.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const initials = (r.student || 'S')
+      .split(' ')
+      .filter(Boolean)
+      .map(p => p[0].toUpperCase())
+      .slice(0, 2)
+      .join('');
+
+    return `
+      <div class="review-card fade-in">
+        <div class="review-top">
+          <div class="review-meta">
+            <div class="review-avatar" style="background:var(--pista-text);">${initials}</div>
+            <div>
+              <div class="review-name">${r.student} <span style="font-size:10px;color:var(--text-light);">(${r.roll})</span></div>
+              <div class="review-date">${r.date}</div>
+            </div>
+          </div>
+          <div class="review-stars">${stars}</div>
+        </div>
+        <p class="review-text">"${r.text}"</p>
+      </div>
+    `;
+  }).join('');
+};
+
+const setupReviewForm = (book) => {
+  // Star picker
+  $$('.star-pick').forEach(star => {
+    star.addEventListener('click', () => {
+      selectedReviewRating = parseInt(star.dataset.val);
+      $$('.star-pick').forEach(s => {
+        const val = parseInt(s.dataset.val);
+        s.classList.toggle('active', val <= selectedReviewRating);
+      });
+    });
+  });
+
+  // Default to 5 stars active
+  $$('.star-pick').forEach(s => s.classList.add('active'));
+
+  // Submit review button
+  const submitBtn = $('#reviewSubmitBtn');
+  if (!submitBtn) return;
+
+  submitBtn.addEventListener('click', () => {
+    const text = $('#reviewText').value.trim();
+    if (!text) {
+      $('#reviewText').classList.add('error');
+      showToast('Please write a few words for your review.', true);
+      return;
+    }
+    $('#reviewText').classList.remove('error');
+
+    const user = getCurrentUser();
+    const allReviews = getAllReviews();
+    const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    const newReview = {
+      id: Date.now(),
+      bookId: book.id,
+      student: user.name,
+      roll: user.roll,
+      rating: selectedReviewRating,
+      text: text,
+      date: dateStr
+    };
+
+    allReviews.unshift(newReview);
+    saveAllReviews(allReviews);
+
+    $('#reviewText').value = '';
+    renderReviews(book);
+    showToast('✦ Thank you! Your review has been published.');
+  });
+};
+
+// ── INITIALIZE ON DOM LOAD ──
 document.addEventListener('DOMContentLoaded', () => {
-  populateSelect();
-  renderIssuedTable();
-  renderReturnTable();
-  renderStats();
-  const tab = new URLSearchParams(window.location.search).get('tab');
-  if (tab) { const b = document.querySelector(`[data-tab="${tab}"]`); if (b) b.click(); }
+  const book = getBookFromURL();
+
+  renderBookDetails(book);
+  setupShelfButtons(book);
+  setupIssueForm(book);
+  renderReviews(book);
+  setupReviewForm(book);
 });

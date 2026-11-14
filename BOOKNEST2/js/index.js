@@ -18,6 +18,7 @@ featuredGrid.innerHTML = featuredBooks.map((b, i) => `
     <div class="book-info">
       <div class="book-title">${b.title}</div>
       <div class="book-author">${b.author}</div>
+      <p class="book-card-desc">${b.shortDescription}</p>
       <div class="book-footer">
         <span class="badge badge-${b.status}">
           ${b.status === 'available' ? 'Available' : 'Issued'}
